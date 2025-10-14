@@ -190,15 +190,13 @@ Odłożone poza MVP:
 
 ### 3.7. Powiadomienia
 
-W MVP:
-- Brak ustawień powiadomień dla użytkownika
-- Domyślny scenariusz powiadomień do minimalnego doprecyzowania (np. informacja o nowym poście, przypomnienie o wpisaniu wagi)
-- Kanały dostarczania: e-mail
-
 Odłożone poza MVP:
+- Wszystkie rodzaje powiadomień (e-mail, push, in-app)
+- Informacje o nowych postach
+- Przypomnienia o wpisaniu wagi
+- Powiadomienia o komentarzach i polubieniach
 - Personalizowane preferencje powiadomień
-- Wybór kanałów dostarczania przez użytkownika
-- Zaawansowane scenariusze (np. powiadomienie o komentarzu, polubienie, osiągnięcie celu)
+- Zaawansowane scenariusze powiadomień
 
 ### 3.8. Zgodność z RODO i zarządzanie danymi
 
@@ -251,10 +249,12 @@ W skład MVP wchodzą:
 - Podstawowe uwierzytelnianie (e-mail + hasło)
 - Minimalna moderacja (usuwanie, zgłaszanie nadużyć)
 - Separacja danych per grupa
+- Brak systemu powiadomień
 
 Poza zakresem MVP:
 - Multi-tenancy (wiele organizacji/dietetyków z własną przestrzenią)
 - Tworzenie dedykowanych planów dietetycznych
+- System powiadomień (e-mail, push, in-app)
 - Automatyczne alerty i powiadomienia o anomaliach wagi
 - Zaawansowane analityki i dashboard dla dietetyka (metryki aktywności, engagement)
 - Personalizowane ustawienia powiadomień dla użytkowników
@@ -645,16 +645,6 @@ Kryteria akceptacji:
 - Możliwość wyszukiwania/filtrowania po dacie
 - Oznaczenie edytowanych wpisów (opcjonalnie)
 
-US-034: Przypomnienie o braku wpisu wagi
-Jako klient
-Chcę otrzymać przypomnienie, jeśli nie wprowadziłem wagi danego dnia
-Aby utrzymać regularność raportowania
-
-Kryteria akceptacji:
-- Przypomnienie domyślnie wysyłane, jeśli brak wpisu do godziny 18:00
-- Kanał dostarczania: e-mail
-- Przypomnienie zawiera bezpośredni link do formularza
-
 ### 5.7. Monitorowanie postępów (dietetyk)
 
 US-035: Przeglądanie zbiorczego widoku postępów klientów
@@ -733,19 +723,7 @@ Aby szybko rozpocząć korzystanie z aplikacji
 Kryteria akceptacji:
 - Klient widzi feed postów z grupy do której jest przypisany
 - Dietetyk widzi dashboard z listą grup i szybkim dostępem do tworzenia posta
-- Widoczne powiadomienia o nowych aktywnościach (jeśli są)
 - Szybki dostęp do formularza dodawania wagi (klient)
-
-
-US-046: Powiadomienie o nowych treściach
-Jako klient
-Chcę być informowany o nowych postach w mojej grupie
-Aby nie przegapić ważnych treści edukacyjnych
-
-Kryteria akceptacji:
-- Brak konfiguracji powiadomień w MVP
-- Kanał dostarczania - e-mail
-- Powiadomienie zawiera: tytuł/fragment posta, link bezpośredni
 
 US-047: Komunikaty błędów i walidacji
 Jako użytkownik

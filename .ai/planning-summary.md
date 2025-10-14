@@ -49,7 +49,7 @@ Komentarze: moderacja przez dietetyka i zgłoszenia nadużyć — zaakceptowane;
 
 Raportowanie wagi: 0,1 kg, późny wpis do 02:00, notatka, wykres zakresów — zaakceptowane (alerty anomalii i wygładzanie — odłożone).
 
-Powiadomienia: pierwotnie rekomendowano e-mail + web push z preferencjami; w MVP — brak ustawień (częściowo przyjęte/ograniczone, kanały do doprecyzowania).
+Powiadomienia: brak powiadomie w MVP
 
 Analityka i dashboard: rekomendowana — odłożona poza MVP.
 
@@ -103,8 +103,6 @@ Wykresy: zakresy 7/30/90 dni; widok klienta i agregat dla dietetyka.
 </prd_planning_summary>
 
 <unresolved_issues>
-
-Powiadomienia: czy w MVP mają działać domyślne powiadomienia (jakie kanały: e-mail, web push? jakie zdarzenia: nowy post, przypomnienie wagi?), skoro „brak ustawień” — potrzebna jasna definicja minimum.
 
 Double opt-in dla zaproszeń: wdrażać w MVP czy później?
 
