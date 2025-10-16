@@ -3,6 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.5.7-SNAPSHOT"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
 }
 
 group = "pl.rmaciak"
@@ -43,4 +44,19 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+ktlint {
+	version.set("1.5.0")
+	verbose.set(true)
+	android.set(false)
+	outputToConsole.set(true)
+	outputColorName.set("RED")
+	ignoreFailures.set(false)
+	enableExperimentalRules.set(true)
+
+	filter {
+		exclude("**/generated/**")
+		exclude("**/build/**")
+	}
 }
