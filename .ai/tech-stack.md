@@ -7,7 +7,7 @@
 
 ## Backend
 
-**Technology:** Kotlin 2.2 + Ktor 3.x + Exposed + PostgreSQL
+**Technology:** Kotlin 2.2 + Spring Boot + Exposed + PostgreSQL
 
 #### Baza danych
 - **PostgreSQL 16** - relational database
@@ -69,7 +69,6 @@
 #### Bezpieczeństwo
 
 ##### CORS
-- Ktor CORS plugin
 - Whitelist frontend origins (Vercel domains)
 - Credentials allowed (cookies)
 
