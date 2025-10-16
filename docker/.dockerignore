@@ -1,0 +1,53 @@
+A# Build artifacts
+../build/
+.gradle/
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.project
+.classpath
+.settings/
+
+# Version control
+.git/
+.gitignore
+.github/
+
+# Documentation
+*.md
+HELP.md
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test reports
+target/
+test-results/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+
+# Other
+.kotlin/
+.ai/
+scripts/

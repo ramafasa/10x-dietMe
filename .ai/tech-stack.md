@@ -38,7 +38,7 @@
 - Public read dla obrazów w opublikowanych postach
 
 #### Email service
-- **AWS SES** lub **SendGrid** lub **Resend**
+- **AWS SES** (configured)
 - **Email templates:**
   - Powitanie po rejestracji
   - Reset hasła (link z tokenem)
@@ -57,7 +57,7 @@
 - Persistent job store w PostgreSQL (Quartz tables)
 
 #### Walidacja danych
-- **kotlinx.serialization** - JSON serialization/deserialization
+- **Jackson (jackson-module-kotlin)** - JSON serialization/deserialization (Spring Boot default)
 - **Custom validation layer:**
   - Email format, uniqueness
   - Password strength (min 8 znaków, 1 cyfra, 1 wielka litera)

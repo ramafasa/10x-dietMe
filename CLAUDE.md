@@ -16,11 +16,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Architecture Decisions
 - **Backend**: Spring Boot 3.5.7 + Kotlin 2.2.0
-- **Database**: PostgreSQL with Liquibase migrations
-- **File storage**: S3-compatible storage (AWS S3 or Cloudflare R2) with 3 image variants (thumbnail/medium/full)
-- **Scheduling**: Quartz Scheduler for scheduled posts, token cleanup, invitation expiry, GDPR retention (24 months)
-- **Email**: AWS SES/SendGrid/Resend for registration, password reset, invitations
-- **Testing**: JUnit 5 + Testcontainers for PostgreSQL integration tests
+- **Database**: PostgreSQL 16 with Exposed ORM (DAO pattern) and Liquibase migrations
+- **Connection pooling**: HikariCP (included with spring-boot-starter-jdbc)
+- **File storage**: AWS S3 with 3 image variants (thumbnail 300px/medium 800px/full 1920px)
+- **Image processing**: Thumbnailator library for resizing
+- **Scheduling**: Quartz Scheduler (JDBC persistent store) for scheduled posts, token cleanup, invitation expiry, GDPR retention
+- **Email**: AWS SES for transactional emails
+- **Serialization**: Jackson (jackson-module-kotlin) for JSON processing
+- **Logging**: Logback with JSON format (logstash-logback-encoder), daily rotation, 30 days retention
+- **Testing**: Kotest (BDD style) + MockK + Testcontainers (PostgreSQL) for integration tests
+- **Monitoring**: Spring Boot Actuator (health, metrics, info endpoints)
+- **Docker**: Multi-stage build with LocalStack for local S3/SES development
+- **CI/CD**: GitHub Actions (ktlint + build + test)
 - **Frontend**: Next.js 15 (separate repository, not in this codebase)
 
 ## Essential Commands
@@ -33,11 +40,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Run the application
 ./gradlew bootRun
 
-# Run with test profile
-./gradlew bootTestRun
+# Run with docker-compose (postgres + localstack + app)
+docker-compose up
+
+# Run only dependencies (postgres + localstack)
+docker-compose up postgres localstack
 
 # Build Docker image
-./gradlew bootBuildImage
+docker build -t dietme:latest .
 
 # Clean build artifacts
 ./gradlew clean
@@ -103,28 +113,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - String templates over concatenation
 - Proper modifier order per Kotlin standards
 
-## Project Structure
-
-```
-.
-├── src/
-│   ├── main/kotlin/pl/rmaciak/dietme/
-│   │   └── Application.kt              # Spring Boot entry point
-│   └── test/kotlin/pl/rmaciak/dietme/
-│       ├── ApplicationTests.kt          # Integration tests
-│       ├── TestApplication.kt           # Test runner with Testcontainers
-│       └── TestcontainersConfiguration.kt
-├── .ai/                                 # Project documentation
-│   ├── prd.md                          # Full Product Requirements Document
-│   ├── planning-summary.md             # Planning decisions summary
-│   ├── project-description.md          # MVP scope definition
-│   ├── tech-stack.md                   # Detailed tech stack decisions
-│   └── ktlint-guide.md                 # ktlint usage guide
-├── .editorconfig                        # Code style config (ktlint rules)
-├── build.gradle.kts                     # Gradle build configuration
-└── settings.gradle.kts
-```
-
 ## Development Notes
 
 ### Database Migrations
@@ -132,10 +120,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Migrations should be placed in `src/main/resources/db/changelog/`
 - Always create reversible migrations when possible
 
-### Testing with Testcontainers
+### Testing with Kotest and Testcontainers
+- **Test framework**: Kotest (BDD style with FunSpec, StringSpec, etc.)
+- **Mocking library**: MockK (Kotlin-native, replaces Mockito)
+- **Spring integration**: kotest-extensions-spring for `@SpringBootTest` support
 - PostgreSQL Testcontainers are configured in `TestcontainersConfiguration.kt`
 - Containers are automatically started/stopped for integration tests
-- Use `@SpringBootTest` with Testcontainers for integration tests
+- Test files use Kotest specs (e.g., `class MyTest : FunSpec({ test("...") { } })`)
 
 ### Security Requirements
 - Password-based authentication (no magic links in MVP)
@@ -176,6 +167,36 @@ Critical project documentation is in `.ai/` directory:
 4. Internationalization (PL-only in MVP?) and accessibility baseline
 5. API rate limits, field size limits, log retention
 
+## Configuration
+
+### Environment Variables
+See `.env.example` for all available configuration options. Key variables:
+
+**Database:**
+- `DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
+
+**AWS:**
+- `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+- `AWS_ENDPOINT_OVERRIDE` (for LocalStack: http://localhost:4566)
+- `S3_BUCKET_NAME`, `SES_FROM_EMAIL`
+
+**Application:**
+- `SERVER_PORT` (default: 8080)
+- `CORS_ALLOWED_ORIGINS` (default: http://localhost:3000)
+- `SPRING_PROFILES_ACTIVE` (dev/test/prod)
+
+### Local Development with Docker
+```bash
+# Start all services (postgres + localstack + app)
+docker-compose up
+
+# Access services:
+# - App: http://localhost:8080
+# - Actuator health: http://localhost:8080/actuator/health
+# - PostgreSQL: localhost:5432
+# - LocalStack S3/SES: localhost:4566
+```
+
 ## Common Pitfalls
 
 1. **ktlint violations block builds**: Always run `./gradlew ktlintFormat` before committing
@@ -183,3 +204,7 @@ Critical project documentation is in `.ai/` directory:
 3. **Java version**: JVM toolchain is Java 21 (not 25, as Kotlin 2.2.0 doesn't support it yet)
 4. **Testcontainers requires Docker**: Docker must be running for tests to pass
 5. **Trailing commas**: Required by ktlint config; auto-fix with `ktlintFormat`
+6. **Kotest test structure**: Use Kotest specs (FunSpec, StringSpec, etc.) instead of JUnit `@Test` annotations
+7. **MockK syntax**: Use MockK DSL (`mockk<Type>()`, `every { }`) instead of Mockito
+- always make sure that there is no linter issues
+- always make sure that application build passes and all tests are green

@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: dietme-postgres
+    environment:
+      POSTGRES_DB: dietme
+      POSTGRES_USER: dietme
+      POSTGRES_PASSWORD: dietme
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dietme -d dietme"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # LocalStack (S3-compatible storage for local development)
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: dietme-localstack
+    environment:
+      - SERVICES=s3,ses
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=eu-central-1
+    ports:
+      - "4566:4566"  # LocalStack main endpoint
+      - "4510-4559:4510-4559"  # External service ports
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # DietMe Application
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: dietme-app
+    environment:
+      # Database
+      DATABASE_URL: jdbc:postgresql://postgres:5432/dietme
+      DATABASE_USERNAME: dietme
+      DATABASE_PASSWORD: dietme
+      # AWS (LocalStack)
+      AWS_ENDPOINT_OVERRIDE: http://localstack:4566
+      AWS_REGION: eu-central-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      # S3
+      S3_BUCKET_NAME: dietme-uploads
+      # SES
+      SES_FROM_EMAIL: noreply@dietme.local
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  localstack_data:
