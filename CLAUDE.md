@@ -28,7 +28,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Monitoring**: Spring Boot Actuator (health, metrics, info endpoints)
 - **Docker**: Multi-stage build with LocalStack for local S3/SES development
 - **CI/CD**: GitHub Actions (ktlint + build + test)
-- **Frontend**: Next.js 15 (separate repository, not in this codebase)
+- **Frontend**: Next.js 15 with TypeScript and Tailwind CSS (located in `/frontend` directory)
 
 ## Essential Commands
 
@@ -94,6 +94,37 @@ docker build -t dietme:latest .
 # Install git pre-commit hook (optional)
 ./scripts/install-git-hooks.sh
 ```
+
+### Frontend Commands
+
+The frontend is located in the `/frontend` directory:
+
+```bash
+# Navigate to frontend
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run development server (http://localhost:3000)
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run ESLint
+npm run lint
+
+# Type check
+npm run type-check
+```
+
+**Frontend Environment Variables:**
+- `NEXT_PUBLIC_API_URL`: Backend API URL (default: http://localhost:8080)
+- See `frontend/.env.example` for all available variables
 
 ## Code Style & Standards
 

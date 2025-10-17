@@ -47,6 +47,13 @@ A comprehensive diet mentoring platform MVP that connects dietitians with client
 
 ## Tech Stack
 
+### Frontend
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **UI Library**: React 18
+- **Styling**: Tailwind CSS 3.4
+- **Location**: `/frontend` directory (separate from backend)
+
 ### Backend
 - **Language**: Kotlin 2.2.0
 - **Framework**: Spring Boot 3.5.7
@@ -96,7 +103,7 @@ DietMe follows a layered architecture with clear separation of concerns:
 ```
 ┌─────────────────────────────────────────┐
 │         Frontend (Next.js 15)           │
-│         (Separate Repository)           │
+│         /frontend directory             │
 └─────────────────────────────────────────┘
                     ↓ REST API
 ┌─────────────────────────────────────────┐
@@ -127,7 +134,7 @@ External Services:
 - **Liquibase**: Version-controlled database schema evolution
 - **Quartz Scheduler**: Persistent job store for scheduled posts, token cleanup, and GDPR retention
 - **Multi-stage Docker**: Optimized builder + runtime images
-- **Separation of Concerns**: Backend API separate from frontend (Next.js in different repo)
+- **Monorepo Structure**: Backend and frontend in same repository, but with separate build processes
 
 ## Getting Started
 
@@ -203,6 +210,27 @@ curl http://localhost:8080/actuator/health
 # Expected response:
 # {"status":"UP"}
 ```
+
+#### 6. Run Frontend (Optional)
+The frontend Next.js application is located in the `frontend/` directory:
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Copy environment file
+cp .env.example .env.local
+
+# Run development server
+npm run dev
+```
+
+The frontend will be available at http://localhost:3000 and will connect to the backend at http://localhost:8080.
+
+For detailed frontend setup instructions, see [frontend/README.md](frontend/README.md).
 
 ### Environment Configuration
 
